@@ -6,15 +6,17 @@ const SimpleInput = (props) => {
   const [inputIsTouched, setInputIsTouched] = useState(false);
 
   // Derived states
-  const invalidName = enteredName.trim() === "";
-  const invalidInput = invalidName && inputIsTouched;
+  const enteredNameIsValid = enteredName.trim() !== "";
+  const nameInputIsInvalid = !enteredNameIsValid && inputIsTouched;
+  // form validity / can add more checks using &&
+  const formIsValid = enteredNameIsValid;
 
   // Handlers
   const formSubmitHandler = event => {
     event.preventDefault();
 
     setInputIsTouched(true);
-    if (invalidName) return;
+    if (!enteredNameIsValid) return;
 
     console.log(enteredName);
     // reset the input
@@ -31,13 +33,13 @@ const SimpleInput = (props) => {
 
   return (
     <form onSubmit={formSubmitHandler}>
-      <div className={invalidInput ? "form-control invalid" : "form-control "}>
+      <div className={nameInputIsInvalid ? "form-control invalid" : "form-control "}>
         <label htmlFor='name'>Your Name</label>
         <input onChange={nameInputChangeHandler} onBlur={nameInputBlurHandler} type='text' id='name' value={enteredName} />
-        {invalidInput && <p className="error-text">Name must not be empty</p>}
+        {nameInputIsInvalid && <p className="error-text">Name must not be empty</p>}
       </div>
       <div className="form-actions">
-        <button>Submit</button>
+        <button disabled={!formIsValid}>Submit</button>
       </div>
     </form>
   );
